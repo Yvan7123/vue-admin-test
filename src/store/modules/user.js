@@ -28,7 +28,7 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         console.log(response)
         const  data  = response
-        commit('SET_TOKEN', data.code)
+        commit('SET_TOKEN', data.data.token)
         setToken(data.data.token)
         resolve()
       }).catch(error => {
