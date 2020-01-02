@@ -8,35 +8,40 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="ID" width="95">
+      <el-table-column align="center" label="机械编号" width="95">
         <template slot-scope="scope">
-          {{ scope.$index }}
+          {{ scope.row.Id }}
         </template>
       </el-table-column>
-      <el-table-column label="Title">
+      <el-table-column label="机械名称" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.Name }}
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110" align="center">
+      <el-table-column label="所属标段" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.SectionName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Pageviews" width="110" align="center">
+      <el-table-column label="所属队伍" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.TeamName }}
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
+      <el-table-column label="宽度" width="110" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          {{ scope.row.Width }}
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="Display_time" width="200">
+      <el-table-column label="类型" width="110" align="center">
         <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
+          {{ ShowTypeName(scope.row.Type) }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="卸载" width="200">
+        <template slot-scope="scope">
+          <i class="el-icon-delete" />
+          <span>{{ scope.row.sectionName }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -69,10 +74,22 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
-        this.list = response.data.items
+      getList(this.$store.getters.token).then(response => {
+        this.list = response.data.lists
         this.listLoading = false
       })
+    },
+    ShowTypeName(type) {
+      console.log(type)
+      if (type == 1) {
+        return "摊铺机"
+      }else if (type == 2) {
+        return "单钢轮"
+      }else if (type == 3) {
+        return "双钢轮"
+      } else {
+        return "胶轮"
+      }
     }
   }
 }

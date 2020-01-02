@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function getList(params) {
+export function getList(token) {
+  console.log(token)
   return request({
-    url: '/table/list',
+    url: '/machines',
     method: 'get',
-    params
+    params:{ token }
   })
 }

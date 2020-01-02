@@ -53,7 +53,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-import { login } from '@/api/user'
+
 
 export default {
   name: 'Login',
