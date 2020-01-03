@@ -61,6 +61,7 @@
 <script>
 import { getList } from '@/api/table'
 import { deleteMachinePost } from "@/api/machine"
+
 export default {
   filters: {
     statusFilter(status) {
