@@ -39,18 +39,28 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="200">
-        <el-button type="warning">
-          卸载
-          <i class="el-icon-delete el-icon-right" />
-        </el-button> 
+        <template slot-scope="scope">
+          <el-button type="warning" @click="handleDelete(scope.$index, scope.row.Id)">
+            卸载
+            <i class="el-icon-delete el-icon-right" />
+          </el-button>
+        </template> 
       </el-table-column>
     </el-table>
-  </div>
+ 
+  <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+    <div class="del-dialog-cnt" > 删除不恢复,是否确定删除? </div>
+    <span slot="footer" class="dialog-footer"> 
+      <el-button @click="delVisible=false"> 取消 </el-button>
+      <el-button type="primary" @click="deleteMachine"> 确定 </el-button> 
+    </span>
+  </el-dialog>
+</div>
 </template>
 
 <script>
 import { getList } from '@/api/table'
-
+import { deleteMachinePost } from "@/api/machine"
 export default {
   filters: {
     statusFilter(status) {
@@ -65,7 +75,9 @@ export default {
   data() {
     return {
       list: null,
-      listLoading: true
+      listLoading: true,
+      delVisible: false,//删除提示弹框的状态
+      delMachineId: 0,//存放删除的数据
     }
   },
   created() {
@@ -74,7 +86,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getList(this.$store.getters.token).then(response => {
+      getList().then(response => {
         this.list = response.data.lists
         this.listLoading = false
       })
@@ -88,6 +100,22 @@ export default {
         return "双钢轮"
       } else {
         return "胶轮"
+      }
+    },
+    handleDelete(index, id) {
+      this.delVisible = true
+      this.delMachineId = id,
+      console.log(id)
+    },
+    deleteMachine(){
+      if(this.delMachineId != 0){
+        deleteMachinePost(this.delMachineId).then(response => {
+            if(response.code == 200 ){
+              this.delVisible = false
+              this.$message.success("删除成功")
+              this.fetchData()
+            }
+        })
       }
     }
   }
