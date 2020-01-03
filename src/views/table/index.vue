@@ -38,11 +38,11 @@
           {{ ShowTypeName(scope.row.Type) }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="卸载" width="200">
-        <template slot-scope="scope">
-          <i class="el-icon-delete" />
-          <span>{{ scope.row.sectionName }}</span>
-        </template>
+      <el-table-column align="center" label="操作" width="200">
+        <el-button type="warning">
+          卸载
+          <i class="el-icon-delete el-icon-right" />
+        </el-button> 
       </el-table-column>
     </el-table>
   </div>
@@ -80,7 +80,6 @@ export default {
       })
     },
     ShowTypeName(type) {
-      console.log(type)
       if (type == 1) {
         return "摊铺机"
       }else if (type == 2) {
