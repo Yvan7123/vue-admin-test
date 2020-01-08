@@ -69,9 +69,9 @@ export const constantRoutes = [
         meta: { title: '设备查询', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        path: 'tab-machines',
+        name: 'tab-machines',
+        component: () => import('@/views/tab-machines/index'),
         meta: { title: 'Tree', icon: 'tree' }
       }
     ]
@@ -84,7 +84,7 @@ export const constantRoutes = [
       {
         path: 'index',
         name: 'Form',
-        component: () => import('@/views/form/index'),
+        component: () => import('@/views/tab-machines/index'),
         meta: { title: 'Form', icon: 'form' }
       }
     ]

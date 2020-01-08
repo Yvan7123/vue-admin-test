@@ -4,7 +4,6 @@ export function deleteMachinePost(data) {
     return request({
         url:"/machine/" + data,
         method:"delete",
-
     })
 }
 

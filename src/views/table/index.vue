@@ -78,7 +78,7 @@ export default {
       list: null,
       listLoading: true,
       delVisible: false,//删除提示弹框的状态
-      delMachineId: 0,//存放删除的数据
+      delMachineId: 0//存放删除的数据
     }
   },
   created() {
