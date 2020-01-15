@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getSectionGet() {
     return request({
-        url: "/sections/",
+        url: "/sections",
         method: "get"
     })
 }

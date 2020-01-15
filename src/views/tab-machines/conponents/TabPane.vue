@@ -1,48 +1,155 @@
 <template>
-    <el-table :data="list" border fit highlight-current-row style="width: 100%">
-        <el-table-column align="center" label="机械编号" width="95">
-            <template slot-scope="scope">
-            {{ scope.row.Id }}
-            </template>
-        </el-table-column>
-        <el-table-column label="机械名称" width="110" align="center">
-            <template slot-scope="scope">
-            {{ scope.row.Name }}
-            </template>
-        </el-table-column>
-        <el-table-column label="所属标段" width="110" align="center">
-            <template slot-scope="scope">
-            <span>{{ scope.row.SectionName }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="所属队伍" width="110" align="center">
-            <template slot-scope="scope">
-            {{ scope.row.TeamName }}
-            </template>
-        </el-table-column>
-        <el-table-column label="宽度" width="110" align="center">
-            <template slot-scope="scope">
-            {{ scope.row.Width }}
-            </template>
-        </el-table-column>
-        <el-table-column label="类型" width="110" align="center">
-            <template slot-scope="scope">
-            {{ ShowTypeName(scope.row.Type) }}
-            </template>
-        </el-table-column>
-        <el-table-column align="center" label="操作" width="200">
-            <template slot-scope="scope">
-            <el-button type="warning" @click="handleDelete(scope.$index, scope.row.Id)">
-                卸载
-                <i class="el-icon-delete el-icon-right" />
-            </el-button>
-            </template> 
-        </el-table-column> 
-    </el-table>
+  <div class="app-container">
+        <el-table 
+            :data="list"
+            v-loading="listLoading"
+            border 
+            fit 
+            highlight-current-row 
+            style="width: 100%"
+        >
+            <el-table-column   align="center" label="机械编号" width="95">
+                <template slot-scope="scope">
+                {{ scope.row.id }}
+                </template>
+            </el-table-column>
+            <el-table-column label="机械名称" align="center">
+                <template slot-scope="scope">
+                {{ scope.row.name }}
+                </template>
+            </el-table-column>
+            <el-table-column label="所属标段" align="center">
+                <template slot-scope="scope">
+                <span>{{ scope.row.section_name }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="所属队伍" align="center">
+                <template slot-scope="scope">
+                {{ scope.row.team_name }}
+                </template>
+            </el-table-column>
+            <el-table-column label="宽度" align="center">
+                <template slot-scope="scope">
+                {{ scope.row.width }}
+                </template>
+            </el-table-column>
+            <el-table-column label="类型" align="center">
+                <template slot-scope="scope">
+                {{ ShowTypeName(scope.row.type) }}
+                </template>
+            </el-table-column>
+            <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
+                <template slot-scope="{row}">
+                    <el-button type="primary" size="mini" @click="handleUpdate(row)">
+                        修改
+                        <i class="el-icon-edit" />
+                    </el-button>
+                    <el-button type="success" v-if="row.status==1" size="mini" @click="handleDelete(row)">
+                        查询
+                        <i class="el-icon-search" />
+                    </el-button>
+                    <el-button type="success" v-if="row.status==0" size="mini" @click="handleDelete(row)">
+                        安装
+                       <i class="el-icon-setting" />
+                    </el-button>
+                    <el-button type="warning" size="mini" @click="handleDelete(row)">
+                        卸载
+                        <i class="el-icon-delete el-icon-right" />
+                    </el-button>
+
+                </template> 
+            </el-table-column> 
+        </el-table>
+
+        <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+            <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+                <el-form-item label="机械编号" prop="id">
+                <el-input v-model="temp.id" />
+                </el-form-item>
+                <el-form-item label="机械名称" prop="title">
+                <el-input v-model="temp.name" />
+                </el-form-item>
+                <el-form-item label="机械类型" prop="type">
+                <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
+                    <el-option v-for="item in machineTypeOptions" :key="item.key" :label="item.display_name" :value="temp.type" />
+                </el-select>
+                </el-form-item>
+                <el-form-item label="所属标段">
+                <el-input v-model="temp.section_name"/>
+                </el-form-item>
+                <el-form-item label="所属队伍">
+                    <el-input v-model="temp.team_name" />
+                </el-form-item>
+                <el-form-item label="机械宽度">
+                    <el-input v-model="temp.width" />
+                </el-form-item>
+
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">
+                取消
+                </el-button>
+                <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+                确定
+                </el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog :visible.sync="dialogPosTable">
+            <el-table 
+                :data="posList"
+                v-loading="posListLoading"
+                highlight-current-row 
+                style="width: 100%"
+            >
+                <el-table-column   align="center" label="机械编号" width="95">
+                    <template slot-scope="scope">
+                    {{ scope.row.id }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="机械名称" align="center">
+                    <template slot-scope="scope">
+                    {{ scope.row.name }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="所属标段" align="center">
+                    <template slot-scope="scope">
+                    <span>{{ scope.row.section_name }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="所属队伍" align="center">
+                    <template slot-scope="scope">
+                    {{ scope.row.team_name }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="宽度" align="center">
+                    <template slot-scope="scope">
+                    {{ scope.row.width }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="类型" align="center">
+                    <template slot-scope="scope">
+                    {{ ShowTypeName(scope.row.type) }}
+                    </template>
+            </el-table-column>
+            </el-table>
+        </el-dialog>
+
+        <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+            <div class="del-dialog-cnt" > 删除不恢复,是否确定删除? </div>
+            <span slot="footer" class="dialog-footer"> 
+            <el-button @click="delVisible=false"> 取消 </el-button>
+            <el-button type="primary" @click="deleteMachine"> 确定 </el-button> 
+            </span>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/machine' 
+
+import { getListBySection } from '@/api/machine'
+import { deleteMachinePost,updateMachine } from "@/api/machine"
+
 export default {
     data() {
         return {
@@ -52,9 +159,32 @@ export default {
                 limit: 5,
                 section: this.section
             },
-            listloading: null,
-            delVisibl: false,
-            delMachineid: 0
+            listloading: false,
+            delVisible: false,
+            delMachineid: 0,
+            dialogFormVisible: false,
+            dialogStatus: '',
+            machineTypeOptions: [
+                { key: 1, display_name: '摊铺机'},
+                { key: 2, display_name: '单钢轮'},
+                { key: 3, display_name: '双钢轮'},
+                { key: 4, display_name: '胶轮'}
+            ],
+            temp: {
+                id: undefined,
+                name: '',
+                type: undefined,
+                section_name: undefined,
+                team: undefined,
+                width: undefined,
+            },
+            textMap: {
+                update: '修改',
+                Create: '创建'
+            },
+            rules: {
+
+            }
         }
     }, 
     props: ['section'],
@@ -80,13 +210,44 @@ export default {
                 return "胶轮"
             }
         },
-        handleDelete(index, id) {
+        handleDelete(row) {
             this.delVisible = true
-            this.delMachineId = id,
-            console.log(id)
+            this.delMachineId = row.id
+        },
+        handleUpdate(row) {
+            console.log(row)
+            this.temp = Object.assign({}, row) // copy obj
+            this.dialogStatus = 'update'
+            this.dialogFormVisible = true
+            this.$nextTick(() => {
+                this.$refs['dataForm'].clearValidate()
+            })
+        },
+        updateData() {
+            this.$refs['dataForm'].validate((valid) => {
+                if (valid) {
+                const tempData = Object.assign({}, this.temp)
+                updateMachine(tempData).then(() => {
+                    for (const v of this.list) {
+                        if (v.id === this.temp.id) {
+                            const index = this.list.indexOf(v)
+                            this.list.splice(index, 1, this.temp)
+                            break
+                        }
+                    }
+                    this.dialogFormVisible = false
+                    this.$notify({
+                        title: 'success',
+                        message: '更新成功',
+                        type: 'success',
+                        duration: 2000
+                    })
+                })
+                }
+            })
         },
         deleteMachine(){
-            if(this.delMachineId != 0){
+            if(this.delMachineId != 0) {
                 deleteMachinePost(this.delMachineId).then(response => {
                     if(response.code == 200 ){
                         this.delVisible = false

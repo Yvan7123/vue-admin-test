@@ -10,32 +10,32 @@
     >
       <el-table-column align="center" label="机械编号" width="95">
         <template slot-scope="scope">
-          {{ scope.row.Id }}
+          {{ scope.row.id }}
         </template>
       </el-table-column>
       <el-table-column label="机械名称" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.Name }}
+          {{ scope.row.name }}
         </template>
       </el-table-column>
       <el-table-column label="所属标段" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.SectionName }}</span>
+          <span>{{ scope.row.section_name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="所属队伍" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.TeamName }}
+          {{ scope.row.team_name }}
         </template>
       </el-table-column>
       <el-table-column label="宽度" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.Width }}
+          {{ scope.row.width }}
         </template>
       </el-table-column>
       <el-table-column label="类型" width="110" align="center">
         <template slot-scope="scope">
-          {{ ShowTypeName(scope.row.Type) }}
+          {{ ShowTypeName(scope.row.type) }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="200">

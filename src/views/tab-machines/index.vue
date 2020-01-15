@@ -3,7 +3,7 @@
         <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
             <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
                 <keep-alive>
-                    <tab-pane v-if="activeName==item.key" :type="item.key" @click="showCreatedTimes" />
+                    <tab-pane v-if="activeName==item.key" :section="item.key" @create="showCreatedTimes" />
                 </keep-alive>
             </el-tab-pane>
         </el-tabs>
@@ -16,36 +16,35 @@ import tabPane  from './conponents/TabPane'
 import { getSectionGet } from '@/api/section'
 
 export default {
-    name: 'tab-machines',
+    name: 'Tab',
     components: { tabPane },
     data() {
         return {
             tabMapOptions: [
-                {label: "一标", key: "101"},
-                {label: "二标", key: "102"}
             ],
-            activeName: '101',
+            activeName: '201',
             createdTimes: 0
         }
     },
     watch: {
         activeName(val){
-            this.$router.push(`${this.$router.path}?tab=${val}`)
+            this.$router.push(`${this.$route.path}?section=${val}`)
         }
     },
     created() {
-        const tab = this.$route.query.tab
-        if(tab) {
-            this.activeName = tab
-        }else {
-            this.getAllSection()
+        const section = this.$route.query.section
+        if(section) {
+            this.activeName = section
         }
+        this.getAllSection()
     },
     methods: {
         getAllSection(){
             this.$loading = true
             getSectionGet().then(repsonse => {
-                this.tabMapOptions = repsonse.data.tabMapOptions
+                this.tabMapOptions = repsonse.data.lists
+                console.log(this.tabMapOptions[1].key)
+                //this.activeName = this.tabMapOptions[1].key
                 this.$loading = false
             })
         },
