@@ -175,6 +175,12 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <pagination v-show="posTotal>0"
+                  :total="posTotal"
+                  :page.sync="posListQuery.page"
+                  :limit.sync="posListQuery.limit"
+                  @pagination="fetchPosData" />
     </el-dialog>
 
     <el-dialog title="提示"
@@ -198,8 +204,10 @@ import { getListBySection } from '@/api/machine'
 import { deleteMachinePost, updateMachine } from "@/api/machine"
 import { getPosListByMachine } from "@/api/pos"
 import { parseTime } from '@/utils'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
+  components: { Pagination },
   data () {
     return {
       list: null,
@@ -215,6 +223,7 @@ export default {
         machine_id: 0,
         date: 0
       },
+      posTotal: 0,
       listloading: false,
       posListLoading: false,
       delVisible: false,
@@ -263,6 +272,7 @@ export default {
       this.posListLoading = true
       getPosListByMachine(this.posListQuery).then(repsonse => {
         this.posList = repsonse.data.lists
+        this.total = repsonse.data.total
         this.posListLoading = false
       })
     },
