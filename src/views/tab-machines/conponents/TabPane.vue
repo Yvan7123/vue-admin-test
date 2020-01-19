@@ -421,16 +421,15 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          PostInstallEquip(tempData).then(() => {
+          PostInstallEquip(tempData).then(response => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
-                this.temp.type = response.data.type
                 const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
+                this.list[index].status = response.data.status
                 break
               }
             }
-            this.dialogFormVisible = false
+            this.dialogInstall = false
             this.$notify({
               title: 'success',
               message: '更新成功',
